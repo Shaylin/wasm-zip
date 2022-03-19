@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "noImplicitAny": true,
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "typeRoots": [
+      "node_modules/@types"
+    ]
+  }
+}
