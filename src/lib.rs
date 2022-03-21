@@ -1,6 +1,9 @@
 mod utils;
+mod crc;
 
 use wasm_bindgen::prelude::*;
+use crc::bitwise_crc_calculator::BitwiseCrcCalculator;
+use crc::CrcCalculator;
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global allocator.
 #[cfg(feature = "wee_alloc")]
@@ -14,5 +17,7 @@ extern {
 
 #[wasm_bindgen]
 pub fn greet() {
-    alert("Hello, doggy-bag!");
+    let crc_calculator = BitwiseCrcCalculator {};
+    let message = format!("CRC {}", crc_calculator.calculate_crc32());
+    alert(&message[..]);
 }
