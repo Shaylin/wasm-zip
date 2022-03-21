@@ -6,4 +6,5 @@ image: rust:alpine
 lint:
   stage: quality
   script:
+    - rustup component add clippy
     - cargo clippy
