@@ -7,8 +7,7 @@ publishing the resulting package to NPM.
 Be sure to check out [other `wasm-pack` tutorials online][tutorials] for other
 templates and usages of `wasm-pack`.
 
-[tutorials]: https://rustwasm.github.io/docs/wasm-pack/tutorials/index.html
-[template-docs]: https://rustwasm.github.io/docs/wasm-pack/tutorials/npm-browser-packages/index.html
+[tutorials]: https://rustwasm.github.io/wasm-pack/book/tutorials/npm-browser-packages/index.html
 
 ## 🚴 Usage
 

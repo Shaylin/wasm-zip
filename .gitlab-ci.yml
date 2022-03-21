@@ -1,0 +1,9 @@
+stages:
+  - quality
+
+image: rust:alpine
+
+lint:
+  stage: quality
+  script:
+    - cargo clippy
