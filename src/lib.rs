@@ -15,7 +15,7 @@ extern {
     fn alert(s: &str);
 }
 
-//TODO: Return a byte slice - cannot return rust allocated mem
+//TODO: Return a boxed byte slice - cannot return rust allocated mem
 // have to use this box because it needs to copy by value - generates a shim to create the buffer on the js side
 #[wasm_bindgen]
 pub fn generate_zip_blob() -> Box<[u8]> {
