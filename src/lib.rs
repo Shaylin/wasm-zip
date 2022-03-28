@@ -1,6 +1,7 @@
 mod utils;
 mod crc;
 
+use wasm_bindgen::JsObject;
 use wasm_bindgen::prelude::*;
 use crc::bitwise_crc_calculator::BitwiseCrcCalculator;
 use crc::CrcCalculator;
@@ -18,9 +19,9 @@ extern {
 //TODO: Return a boxed byte slice - cannot return rust allocated mem
 // have to use this box because it needs to copy by value - generates a shim to create the buffer on the js side
 #[wasm_bindgen]
-pub fn generate_zip_blob() -> Box<[u8]> {
+pub fn generate_zip_blob(zip_contents: &dyn JsObject) -> Box<[u8]> {
     let crc_calculator = BitwiseCrcCalculator {};
-    let message = format!("CRC {}", crc_calculator.calculate_crc32());
+    let message = format!("CRC {}", zip_contents.keys());
     alert(&message[..]);
 
     let ting: &[u8] = &[2, 3, 4, 5, 6, 6, 7, 8];
