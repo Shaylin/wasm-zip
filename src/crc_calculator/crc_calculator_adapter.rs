@@ -13,7 +13,6 @@ impl CrcCalculatorAdapter {
     }
 }
 
-//TODO: Figure out if its healthy to keep things like a singleton here - or do we need to init a new crc object every time - that's okay too
 impl CrcCalculator for CrcCalculatorAdapter {
     fn calculate_crc32(&self, data: &[u8]) -> u32 {
         let mut digest = self.crc.digest();
