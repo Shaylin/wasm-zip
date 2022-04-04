@@ -30,7 +30,7 @@ pub fn generate_zip_blob(zip_contents: Object) -> Box<[u8]> {
     // 2. Allocate the boxed slice for it on the heap+
     // 3. Start writing headers and files
 
-    let crc_calculator = CrcCalculatorAdapter {};
+    let crc_calculator = CrcCalculatorAdapter::new();
     let message = format!("CRC {:?}", directory_mapping.get(&JsValue::from_str("capoo")));
     alert(&message[..]);
 
