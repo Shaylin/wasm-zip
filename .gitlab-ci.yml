@@ -8,3 +8,8 @@ lint:
   script:
     - rustup component add clippy
     - cargo clippy
+
+unit_test:
+  stage: quality
+  script:
+    - cargo test

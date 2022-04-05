@@ -1,23 +1,10 @@
-## About
-[**📚 Read this template tutorial! 📚**][template-docs]
-
-This template is designed for compiling Rust libraries into WebAssembly and
-publishing the resulting package to NPM.
-
-Be sure to check out [other `wasm-pack` tutorials online][tutorials] for other
-templates and usages of `wasm-pack`.
-
-[tutorials]: https://rustwasm.github.io/wasm-pack/book/tutorials/npm-browser-packages/index.html
+# Doggy Bag
 
 ## 🚴 Usage
 
-### 🐑 Use `cargo generate` to Clone this Template
-
-[Learn more about `cargo generate` here.](https://github.com/ashleygwilliams/cargo-generate)
-
+### 🐑 Unit Test with `cargo test`
 ```
-cargo generate --git https://github.com/rustwasm/wasm-pack-template.git --name my-project
-cd my-project
+cargo test
 ```
 
 ### 🛠️ Build with `wasm-pack build`
@@ -32,17 +19,27 @@ wasm-pack build
 wasm-pack test --headless --firefox
 ```
 
-### 🎁 Publish to NPM with `wasm-pack publish`
+### 🪲 Test with Test Web App
 
+In the parent directory of this project (i.e. one folder up), run:
 ```
-wasm-pack publish
+npm init wasm-app my-test-wasm-app
+cd my-test-wasm-app
+npm remove hello-wasm-pack --save
+npm install ../doggy-bag/pkg/ --save
 ```
 
-## 🔋 Batteries Included
+Then edit the first line of the import index.js file of the test app to be:
+```javascript
+import * as wasm from "doggy-bag";
+```
 
-* [`wasm-bindgen`](https://github.com/rustwasm/wasm-bindgen) for communicating
-  between WebAssembly and JavaScript.
-* [`console_error_panic_hook`](https://github.com/rustwasm/console_error_panic_hook)
-  for logging panic messages to the developer console.
-* [`wee_alloc`](https://github.com/rustwasm/wee_alloc), an allocator optimized
-  for small code size.
+The following lines should call any exported functions from the web assembly such as:
+```javascript
+wasm.generate_zip_blob();
+```
+
+Finally, run the app with:
+```
+npm run start
+```
