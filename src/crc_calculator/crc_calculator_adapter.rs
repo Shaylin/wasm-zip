@@ -19,7 +19,7 @@ impl CrcCalculator for CrcCalculatorAdapter {
 
         digest.update(data);
 
-        return digest.finalize();
+        digest.finalize()
     }
 }
 

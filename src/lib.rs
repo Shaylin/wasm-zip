@@ -6,7 +6,7 @@ use crc_calculator::CrcCalculator;
 
 mod utils;
 mod crc_calculator;
-mod blob;
+mod file_entry;
 
 #[wasm_bindgen]
 extern {
@@ -23,7 +23,7 @@ pub fn generate_zip_blob(zip_contents: Object) -> Box<[u8]> {
     let directory_mapping = create_directory_mapping(&zip_contents, String::from(""));
 
     // 1. Determine the size of the zip that's going to be created in bytes
-    // 2. Allocate the boxed slice for it on the heap+
+    // 2. Allocate the boxed slice for it on the heap
     // 3. Start writing headers and files
 
     let crc_calculator = CrcCalculatorAdapter::new();
@@ -32,5 +32,5 @@ pub fn generate_zip_blob(zip_contents: Object) -> Box<[u8]> {
 
     let ting: &[u8] = &[2, 3, 4, 5, 6, 6, 7, 8];
 
-    return Box::from(ting);
+    Box::from(ting)
 }
