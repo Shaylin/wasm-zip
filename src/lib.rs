@@ -7,6 +7,7 @@ use crc_calculator::CrcCalculator;
 mod utils;
 mod crc_calculator;
 mod file_entry;
+mod date_time_retriever;
 
 #[wasm_bindgen]
 extern {

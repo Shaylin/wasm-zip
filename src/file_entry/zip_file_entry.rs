@@ -5,18 +5,30 @@ pub struct ZipFileEntry {
 }
 
 impl ZipFileEntry {
-    fn get_header_size(&self) -> u32 {
-        // The file header features a fixed 30 bytes of data plus a variable length file name
-        let base_header_size: u32 = 30;
-        let file_name_size: u32 = self.file_name.len() as u32;
+    fn get_header_size(&self) -> usize {
+        let base_header_size = 30;
+        let file_name_size = self.file_name.len();
 
         base_header_size + file_name_size
     }
 
-    // fn get_header() -> Box<[u8]> {
-    //     todo!()
-    // }
-    //
+    fn get_header(&self) -> Box<[u8]> {
+        let mut header_data: Vec<u8> = Vec::with_capacity(self.get_header_size());
+
+        let _local_file_header_signature: Vec<u8> = vec![0x50, 0x4B, 0x03, 0x04];
+        let _version_needed_to_extract: Vec<u8> = vec![0x0A, 0x00];
+        let _general_purpose_bit_flag: Vec<u8> = vec![0x00, 0x00];
+        let _compression_method: Vec<u8> = vec![0x00, 0x00];
+
+        let _last_modified_time:Vec<u8> = vec![0x00, 0x00];
+        let _last_modified_date:Vec<u8> = vec![0x00, 0x00];
+
+        let _crc:Vec<u8> = Vec::from(self.crc.to_le_bytes());
+
+
+        header_data.into_boxed_slice()
+    }
+
     // fn get_central_directory_header_size() -> Box<[u8]> {
     //     todo!()
     // }
@@ -43,7 +55,7 @@ mod tests {
         let file_entry = ZipFileEntry {
             body: Box::from([1, 2, 3]),
             crc: 0,
-            file_name: String::from("yow")
+            file_name: String::from("yow"),
         };
 
         let header_size = file_entry.get_header_size();
@@ -56,7 +68,7 @@ mod tests {
         let file_entry = ZipFileEntry {
             body: Box::from([1, 2, 3]),
             crc: 0,
-            file_name: String::from("Capoo The BugCat Makes His Move")
+            file_name: String::from("Capoo The BugCat Makes His Move"),
         };
 
         let header_size = file_entry.get_header_size();
