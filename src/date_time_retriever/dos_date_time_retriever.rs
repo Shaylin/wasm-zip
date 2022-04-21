@@ -8,11 +8,11 @@ impl DosDateTimeRetriever {
 
         let mut dos_time: u16 = 0;
 
-        dos_time = dos_time | (seconds / 2);
-        dos_time = dos_time | (minutes << 5);
-        dos_time = dos_time | (hours << 11);
+        dos_time |= seconds / 2;
+        dos_time |= minutes << 5;
+        dos_time |= hours << 11;
 
-        return dos_time;
+        dos_time
     }
 
     fn get_current_dos_date(&self) -> u16 {
@@ -22,11 +22,11 @@ impl DosDateTimeRetriever {
 
         let mut dos_date: u16 = 0;
 
-        dos_date = dos_date | day;
-        dos_date = dos_date | (month << 5);
-        dos_date = dos_date | (years_since_1980 << 9);
+        dos_date |= day;
+        dos_date |= month << 5;
+        dos_date |= years_since_1980 << 9;
 
-        return dos_date;
+        dos_date
     }
 }
 
