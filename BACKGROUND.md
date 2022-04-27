@@ -10,6 +10,19 @@ Presently, Doggy Bag creates zip archives without any compression applied. The z
 
 ## Zip Archive Creation
 
+Zip archives are split into 2 sections:
+1. The file entries.
+2. The central directory.
+
+A simplified layout of a zip archive is shown below:
+
+![](diagrams/zip_structure.png)
+
+### File Entries
+
+
+
+### Central Directory
 
 
 ## References
