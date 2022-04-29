@@ -12,10 +12,6 @@ pub struct ZipBlobFactoryAdapter {
     date_time_retriever: DosDateTimeRetriever,
 }
 
-//TODO: It seems we cannot easily create a map in rust land - or at the very least, it will be miserable
-//TODO: So rather than doing everything on the fly, we need to convert this thing into a nicer rust struct
-//TODO: We will certainly be able to test that
-
 impl ZipBlobFactory for ZipBlobFactoryAdapter {
     fn create_zip_blob(&self, directory_mapping: HashMap<String, Vec<u8>>) -> Box<[u8]> {
         todo!()
