@@ -1,7 +1,7 @@
 use crate::date_time_retriever::DosDateTimeRetriever;
 
 impl DosDateTimeRetriever {
-    fn get_current_dos_time(&self) -> u16 {
+    pub fn get_current_dos_time(&self) -> u16 {
         let hours = self.date_time_retriever.get_hours();
         let minutes = self.date_time_retriever.get_minutes();
         let seconds = self.date_time_retriever.get_seconds();
@@ -15,7 +15,7 @@ impl DosDateTimeRetriever {
         dos_time
     }
 
-    fn get_current_dos_date(&self) -> u16 {
+    pub fn get_current_dos_date(&self) -> u16 {
         let day = self.date_time_retriever.get_day();
         let month = self.date_time_retriever.get_month();
         let years_since_1980 = self.date_time_retriever.get_year() - 1980;

@@ -11,5 +11,5 @@ pub trait SystemTimeRetriever {
 }
 
 pub struct DosDateTimeRetriever {
-    date_time_retriever: Box<dyn SystemTimeRetriever>,
+    date_time_retriever: Box<dyn SystemTimeRetriever>
 }

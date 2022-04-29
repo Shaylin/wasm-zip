@@ -8,6 +8,7 @@ mod utils;
 mod crc_calculator;
 mod zip_file;
 mod date_time_retriever;
+mod directory_hash_map_generator;
 
 #[wasm_bindgen]
 extern {
@@ -16,7 +17,6 @@ extern {
 
 #[wasm_bindgen(module = "/js/create_directory_mapping.js")]
 extern "C" {
-    //TODO: This is a map of string names to uint8 arrays
     fn create_directory_mapping(directory_listing: &Object, folder_prefix: String) -> Map;
 }
 
@@ -27,7 +27,7 @@ pub fn generate_zip_blob(zip_contents: Object) -> Box<[u8]> {
     for file_name_result in directory_mapping.keys() {
         let file_name = file_name_result.unwrap();
         let file_contents = directory_mapping.get(&file_name);
-        let file_bytes = Uint8Array::new(&file_contents);
+        let file_bytes = Uint8Array::new(&file_contents).to_vec();
         let file_vector = file_bytes.to_vec();
 
         let message = format!("Data {:?}", file_vector);

@@ -1,10 +1,10 @@
 pub struct ZipFileEntry {
-    body: Box<[u8]>,
-    crc: u32,
-    file_name: String,
-    dos_time: u16,
-    dos_date: u16,
-    entry_offset: u32,
+    pub body: Vec<u8>,
+    pub crc: u32,
+    pub file_name: String,
+    pub dos_time: u16,
+    pub dos_date: u16,
+    pub entry_offset: u32,
 }
 
 impl ZipFileEntry {
