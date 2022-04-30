@@ -1,6 +1,5 @@
 use std::collections::HashMap;
 use std::iter::Zip;
-use js_sys::{Map, Uint8Array};
 use wasm_bindgen::JsValue;
 use crate::CrcCalculator;
 use crate::date_time_retriever::DosDateTimeRetriever;
@@ -9,7 +8,7 @@ use crate::zip_file::ZipBlobFactory;
 
 pub struct ZipBlobFactoryAdapter {
     crc_calculator: Box<dyn CrcCalculator>,
-    date_time_retriever: DosDateTimeRetriever,
+    date_time_retriever: Box<dyn DosDateTimeRetriever>,
 }
 
 impl ZipBlobFactory for ZipBlobFactoryAdapter {
@@ -71,6 +70,105 @@ impl ZipBlobFactoryAdapter {
 mod tests {
     use super::*;
 
+    struct FakeCrcCalculator {}
+
+    impl CrcCalculator for FakeCrcCalculator {
+        fn calculate_crc32(&self, data: &[u8]) -> u32 {
+            0x11223344
+        }
+    }
+
+    struct FakeDosDateTimeRetriever {}
+
+    impl DosDateTimeRetriever for FakeDosDateTimeRetriever {
+        fn get_current_dos_time(&self) -> u16 {
+            0x1133
+        }
+
+        fn get_current_dos_date(&self) -> u16 {
+            0x9988
+        }
+    }
+
     #[test]
-    fn single_byte() {}
+    fn zip_file_size_should_be_the_sum_of_body_header_lengths() {
+        let blob_factory_adapter = ZipBlobFactoryAdapter {
+            crc_calculator: Box::new(FakeCrcCalculator {}),
+            date_time_retriever: Box::new(FakeDosDateTimeRetriever {}),
+        };
+
+        let fake_file_entry = ZipFileEntry {
+            body: vec![0;293],
+            crc: 0,
+            file_name: String::from("blab"),
+            dos_time: 0,
+            dos_date: 0,
+            entry_offset: 0
+        };
+
+        assert_eq!(327, blob_factory_adapter.get_zip_file_size(&fake_file_entry));
+    }
+
+    #[test]
+    fn calculate_file_crc_should_delegate_to_crc_calculator() {
+        let blob_factory_adapter = ZipBlobFactoryAdapter {
+            crc_calculator: Box::new(FakeCrcCalculator {}),
+            date_time_retriever: Box::new(FakeDosDateTimeRetriever {}),
+        };
+
+        let fake_file_body: Vec<u8> = vec![0;33];
+
+        assert_eq!(0x11223344, blob_factory_adapter.calculate_file_crc(&fake_file_body));
+    }
+
+    #[test]
+    fn create_zip_file_entry_should_create_zip_entry_with_given_data() {
+        let blob_factory_adapter = ZipBlobFactoryAdapter {
+            crc_calculator: Box::new(FakeCrcCalculator {}),
+            date_time_retriever: Box::new(FakeDosDateTimeRetriever {}),
+        };
+
+        let file_name = String::from("BugCat");
+        let file_body: Vec<u8> = vec![0;33];
+        let header_offset: u32 = 98;
+
+        let created_file_entry = blob_factory_adapter.create_zip_file_entry(file_name.clone(), file_body.clone(), header_offset);
+
+        assert_eq!(file_name, created_file_entry.file_name);
+        assert_eq!(file_body, created_file_entry.body);
+        assert_eq!(header_offset, created_file_entry.entry_offset);
+        assert_eq!(0x11223344, created_file_entry.crc);
+        assert_eq!(0x1133, created_file_entry.dos_time);
+        assert_eq!(0x9988, created_file_entry.dos_date);
+    }
+
+    #[test]
+    fn creating_multiple_entries_from_directory_hash_map_with_sequential_header_offsets() {
+        let blob_factory_adapter = ZipBlobFactoryAdapter {
+            crc_calculator: Box::new(FakeCrcCalculator {}),
+            date_time_retriever: Box::new(FakeDosDateTimeRetriever {}),
+        };
+
+        let given_hash_map:HashMap<String, Vec<u8>> = HashMap::from([
+            (String::from("BugCat.txt"), vec![2;16]),
+            (String::from("MyFolder/FoamCat.txt"), vec![0;11])
+        ]);
+
+        let created_file_entries = blob_factory_adapter.create_zip_file_entries(given_hash_map);
+
+        //The consuming iterator used to create the vector has arbitrary ordering
+        if created_file_entries[0].file_name == String::from("BugCat.txt") {
+            assert_eq!(vec![2;16], created_file_entries[0].body);
+            assert_eq!(0, created_file_entries[0].entry_offset);
+
+            assert_eq!(vec![0;11], created_file_entries[1].body);
+            assert_eq!(56, created_file_entries[1].entry_offset);
+        } else {
+            assert_eq!(vec![0;11], created_file_entries[0].body);
+            assert_eq!(0, created_file_entries[0].entry_offset);
+
+            assert_eq!(vec![2;16], created_file_entries[1].body);
+            assert_eq!(61, created_file_entries[1].entry_offset);
+        }
+    }
 }

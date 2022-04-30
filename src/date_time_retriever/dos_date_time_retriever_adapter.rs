@@ -1,7 +1,11 @@
-use crate::date_time_retriever::DosDateTimeRetriever;
+use crate::date_time_retriever::{DosDateTimeRetriever, SystemTimeRetriever};
 
-impl DosDateTimeRetriever {
-    pub fn get_current_dos_time(&self) -> u16 {
+pub struct DosDateTimeRetrieverAdapter {
+    date_time_retriever: Box<dyn SystemTimeRetriever>,
+}
+
+impl DosDateTimeRetriever for DosDateTimeRetrieverAdapter {
+    fn get_current_dos_time(&self) -> u16 {
         let hours = self.date_time_retriever.get_hours();
         let minutes = self.date_time_retriever.get_minutes();
         let seconds = self.date_time_retriever.get_seconds();
@@ -15,7 +19,7 @@ impl DosDateTimeRetriever {
         dos_time
     }
 
-    pub fn get_current_dos_date(&self) -> u16 {
+    fn get_current_dos_date(&self) -> u16 {
         let day = self.date_time_retriever.get_day();
         let month = self.date_time_retriever.get_month();
         let years_since_1980 = self.date_time_retriever.get_year() - 1980;
@@ -29,7 +33,6 @@ impl DosDateTimeRetriever {
         dos_date
     }
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -124,7 +127,7 @@ mod tests {
     fn current_dos_time_at_midnight() {
         let fake_system_time_retriever = Box::new(FakeMidnightTimeRetriever {});
 
-        let dos_date_time_retriever = DosDateTimeRetriever {
+        let dos_date_time_retriever = DosDateTimeRetrieverAdapter {
             date_time_retriever: fake_system_time_retriever
         };
 
@@ -137,7 +140,7 @@ mod tests {
     fn current_dos_time_at_morning() {
         let fake_system_time_retriever = Box::new(FakeMorningTimeRetriever {});
 
-        let dos_date_time_retriever = DosDateTimeRetriever {
+        let dos_date_time_retriever = DosDateTimeRetrieverAdapter {
             date_time_retriever: fake_system_time_retriever
         };
 
@@ -150,7 +153,7 @@ mod tests {
     fn current_dos_time_at_night() {
         let fake_system_time_retriever = Box::new(FakeNightTimeRetriever {});
 
-        let dos_date_time_retriever = DosDateTimeRetriever {
+        let dos_date_time_retriever = DosDateTimeRetrieverAdapter {
             date_time_retriever: fake_system_time_retriever
         };
 
@@ -163,7 +166,7 @@ mod tests {
     fn current_dos_date_at_midnight() {
         let fake_system_time_retriever = Box::new(FakeMidnightTimeRetriever {});
 
-        let dos_date_time_retriever = DosDateTimeRetriever {
+        let dos_date_time_retriever = DosDateTimeRetrieverAdapter {
             date_time_retriever: fake_system_time_retriever
         };
 
@@ -176,7 +179,7 @@ mod tests {
     fn current_dos_date_at_morning() {
         let fake_system_time_retriever = Box::new(FakeMorningTimeRetriever {});
 
-        let dos_date_time_retriever = DosDateTimeRetriever {
+        let dos_date_time_retriever = DosDateTimeRetrieverAdapter {
             date_time_retriever: fake_system_time_retriever
         };
 
@@ -189,7 +192,7 @@ mod tests {
     fn current_dos_date_at_night() {
         let fake_system_time_retriever = Box::new(FakeNightTimeRetriever {});
 
-        let dos_date_time_retriever = DosDateTimeRetriever {
+        let dos_date_time_retriever = DosDateTimeRetrieverAdapter {
             date_time_retriever: fake_system_time_retriever
         };
 

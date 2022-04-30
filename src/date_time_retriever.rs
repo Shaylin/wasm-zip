@@ -1,4 +1,4 @@
-pub mod dos_date_time_retriever;
+pub mod dos_date_time_retriever_adapter;
 pub mod chrono_system_time_retriever;
 
 pub trait SystemTimeRetriever {
@@ -10,6 +10,7 @@ pub trait SystemTimeRetriever {
     fn get_year(&self) -> u16;
 }
 
-pub struct DosDateTimeRetriever {
-    date_time_retriever: Box<dyn SystemTimeRetriever>
+pub trait DosDateTimeRetriever {
+    fn get_current_dos_time(&self) -> u16;
+    fn get_current_dos_date(&self) -> u16;
 }
