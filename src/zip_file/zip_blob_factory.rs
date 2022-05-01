@@ -1,13 +1,13 @@
 use std::collections::HashMap;
 use std::iter::{Zip, zip};
 use crate::CrcCalculator;
-use crate::date_time_retriever::DosDateTimeRetriever;
+use crate::date_time_converter::DosDateTimeCalculator;
 use crate::zip_file::zip_file_entry::ZipFileEntry;
 use crate::zip_file::ZipBlobFactory;
 
 pub struct ZipBlobFactoryAdapter {
     pub(crate) crc_calculator: Box<dyn CrcCalculator>,
-    pub(crate) date_time_retriever: Box<dyn DosDateTimeRetriever>,
+    pub(crate) date_time_retriever: Box<dyn DosDateTimeCalculator>,
 }
 
 impl ZipBlobFactory for ZipBlobFactoryAdapter {
@@ -16,7 +16,6 @@ impl ZipBlobFactory for ZipBlobFactoryAdapter {
 
         let mut zip_blob: Vec<u8> = Vec::new();
         let mut central_directory_records: Vec<u8> = Vec::new();
-
         let mut end_of_central_directory_record = self.get_end_of_central_directory_record(&zip_file_entries);
 
         for file_entry in zip_file_entries {
@@ -85,14 +84,16 @@ impl ZipBlobFactoryAdapter {
             0x00, 0x00,                 //disk where central directory starts
         ];
 
-        let mut number_of_central_directory_records_section = self.get_number_of_central_directory_records_section(zip_file_entries);
+        let mut total_number_of_central_directory_records = self.get_number_of_central_directory_records_section(zip_file_entries);
+        let mut number_of_central_directory_records_on_disk = self.get_number_of_central_directory_records_section(zip_file_entries);
         let mut size_of_central_directory_section = self.get_size_of_central_directory_section(zip_file_entries);
         let mut central_directory_start_section = self.get_central_directory_start_offset_section(zip_file_entries);
 
         let mut comment_length: Vec<u8> = vec![0x00, 0x00];
 
         end_of_central_directory_record.append(&mut disk_info_section);
-        end_of_central_directory_record.append(&mut number_of_central_directory_records_section);
+        end_of_central_directory_record.append(&mut total_number_of_central_directory_records);
+        end_of_central_directory_record.append(&mut number_of_central_directory_records_on_disk);
         end_of_central_directory_record.append(&mut size_of_central_directory_section);
         end_of_central_directory_record.append(&mut central_directory_start_section);
         end_of_central_directory_record.append(&mut comment_length);
@@ -142,7 +143,7 @@ mod tests {
 
     struct FakeDosDateTimeRetriever {}
 
-    impl DosDateTimeRetriever for FakeDosDateTimeRetriever {
+    impl DosDateTimeCalculator for FakeDosDateTimeRetriever {
         fn get_current_dos_time(&self) -> u16 {
             0x1133
         }
@@ -232,6 +233,130 @@ mod tests {
             assert_eq!(vec![2; 16], created_file_entries[1].body);
             assert_eq!(61, created_file_entries[1].entry_offset);
         }
+    }
+
+    #[test]
+    fn number_of_central_directory_records_with_one_entry() {
+        let blob_factory_adapter = ZipBlobFactoryAdapter {
+            crc_calculator: Box::new(FakeCrcCalculator {}),
+            date_time_retriever: Box::new(FakeDosDateTimeRetriever {}),
+        };
+
+        let mut zip_entries: Vec<ZipFileEntry> = Vec::new();
+
+        zip_entries.push(ZipFileEntry {
+            body: vec![],
+            crc: 0,
+            file_name: "a".to_string(),
+            dos_time: 0,
+            dos_date: 0,
+            entry_offset: 0,
+        });
+
+        let number_of_central_directory_records = blob_factory_adapter.get_number_of_central_directory_records_section(&zip_entries);
+
+        assert_eq!([0x01, 0x00], &number_of_central_directory_records[0..2]);
+    }
+
+    #[test]
+    fn number_of_central_directory_records_with_many_entries() {
+        let blob_factory_adapter = ZipBlobFactoryAdapter {
+            crc_calculator: Box::new(FakeCrcCalculator {}),
+            date_time_retriever: Box::new(FakeDosDateTimeRetriever {}),
+        };
+
+        let blob_factory_adapter = ZipBlobFactoryAdapter {
+            crc_calculator: Box::new(FakeCrcCalculator {}),
+            date_time_retriever: Box::new(FakeDosDateTimeRetriever {}),
+        };
+
+        let mut zip_entries: Vec<ZipFileEntry> = Vec::new();
+
+        for entry_number in 0..1000 {
+            zip_entries.push(ZipFileEntry {
+                body: vec![],
+                crc: 0,
+                file_name: "a".to_string(),
+                dos_time: 0,
+                dos_date: 0,
+                entry_offset: 0,
+            });
+        }
+
+        let number_of_central_directory_records = blob_factory_adapter.get_number_of_central_directory_records_section(&zip_entries);
+
+        assert_eq!([0xE8, 0x03], &number_of_central_directory_records[0..2]);
+    }
+
+    #[test]
+    fn central_directory_size_with_one_entry() {
+        let blob_factory_adapter = ZipBlobFactoryAdapter {
+            crc_calculator: Box::new(FakeCrcCalculator {}),
+            date_time_retriever: Box::new(FakeDosDateTimeRetriever {}),
+        };
+
+        let mut zip_entries: Vec<ZipFileEntry> = Vec::new();
+
+        zip_entries.push(ZipFileEntry {
+            body: vec![0; 10],
+            crc: 0,
+            file_name: "BugCat.txt".to_string(),
+            dos_time: 0,
+            dos_date: 0,
+            entry_offset: 0,
+        });
+
+        let central_directory_size = blob_factory_adapter.get_size_of_central_directory_section(&zip_entries);
+
+        assert_eq!([0x38, 0x00, 0x00, 0x00], &central_directory_size[0..4]);
+    }
+
+    #[test]
+    fn central_directory_size_with_many_entries() {
+        let blob_factory_adapter = ZipBlobFactoryAdapter {
+            crc_calculator: Box::new(FakeCrcCalculator {}),
+            date_time_retriever: Box::new(FakeDosDateTimeRetriever {}),
+        };
+
+        let mut zip_entries: Vec<ZipFileEntry> = Vec::new();
+
+        for entry_number in 0..10 {
+            zip_entries.push(ZipFileEntry {
+                body: vec![0; 10],
+                crc: 0,
+                file_name: "BugCat.txt".to_string(),
+                dos_time: 0,
+                dos_date: 0,
+                entry_offset: 0,
+            });
+        }
+
+        let central_directory_size = blob_factory_adapter.get_size_of_central_directory_section(&zip_entries);
+
+        assert_eq!([0x30, 0x02, 0x00, 0x00], &central_directory_size[0..4]);
+    }
+
+    #[test]
+    fn central_directory_offset_with_one_entry() {
+        let blob_factory_adapter = ZipBlobFactoryAdapter {
+            crc_calculator: Box::new(FakeCrcCalculator {}),
+            date_time_retriever: Box::new(FakeDosDateTimeRetriever {}),
+        };
+
+        let mut zip_entries: Vec<ZipFileEntry> = Vec::new();
+
+        zip_entries.push(ZipFileEntry {
+            body: vec![0; 10],
+            crc: 0,
+            file_name: "BugCat.txt".to_string(),
+            dos_time: 0,
+            dos_date: 0,
+            entry_offset: 0,
+        });
+
+        let central_directory_offset = blob_factory_adapter.get_central_directory_start_offset_section(&zip_entries);
+
+        assert_eq!([0x32, 0x00, 0x00, 0x00], &central_directory_offset[0..4]);
     }
 
     #[test]
