@@ -1,7 +1,8 @@
 use crate::date_time_retriever::{DosDateTimeRetriever, SystemTimeRetriever};
+use crate::date_time_retriever::chrono_system_time_retriever::ChronoSystemTimeRetriever;
 
 pub struct DosDateTimeRetrieverAdapter {
-    date_time_retriever: Box<dyn SystemTimeRetriever>,
+    pub(crate) date_time_retriever: Box<dyn SystemTimeRetriever>,
 }
 
 impl DosDateTimeRetriever for DosDateTimeRetrieverAdapter {

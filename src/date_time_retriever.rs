@@ -1,5 +1,6 @@
 pub mod dos_date_time_retriever_adapter;
 pub mod chrono_system_time_retriever;
+pub mod fake_time_retriever;
 
 pub trait SystemTimeRetriever {
     fn get_hours(&self) -> u16;

@@ -66,10 +66,9 @@ impl ZipFileEntry {
     }
 
     fn get_total_file_size(&self) -> u32 {
-        let file_name_size: u32 = self.file_name.len() as u32;
         let body_size: u32 = self.body.len() as u32;
 
-        file_name_size + body_size
+        body_size
     }
 
     fn get_local_file_name_header_section(&self) -> Vec<u8> {
@@ -310,7 +309,7 @@ mod tests {
 
         let local_file_header = file_entry.get_local_file_header();
 
-        assert_eq!([0x08, 0x00, 0x00, 0x00], &local_file_header[18..22]);
+        assert_eq!([0x03, 0x00, 0x00, 0x00], &local_file_header[18..22]);
     }
 
     #[test]
@@ -326,7 +325,7 @@ mod tests {
 
         let local_file_header = file_entry.get_local_file_header();
 
-        assert_eq!([0x14, 0x00, 0x00, 0x00], &local_file_header[22..26]);
+        assert_eq!([0x04, 0x00, 0x00, 0x00], &local_file_header[22..26]);
     }
 
     #[test]
@@ -552,7 +551,7 @@ mod tests {
 
         let central_directory_header = file_entry.get_central_directory_header();
 
-        assert_eq!([0x05, 0x00, 0x00, 0x00], &central_directory_header[20..24]);
+        assert_eq!([0x03, 0x00, 0x00, 0x00], &central_directory_header[20..24]);
     }
 
     #[test]
@@ -568,7 +567,7 @@ mod tests {
 
         let central_directory_header = file_entry.get_central_directory_header();
 
-        assert_eq!([0x0D, 0x00, 0x00, 0x00], &central_directory_header[24..28]);
+        assert_eq!([0x05, 0x00, 0x00, 0x00], &central_directory_header[24..28]);
     }
 
     #[test]
