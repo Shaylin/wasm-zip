@@ -360,6 +360,31 @@ mod tests {
     }
 
     #[test]
+    fn end_of_central_directory_signature() {
+        let blob_factory_adapter = ZipBlobFactoryAdapter {
+            crc_calculator: Box::new(FakeCrcCalculator {}),
+            date_time_retriever: Box::new(FakeDosDateTimeRetriever {}),
+        };
+
+        let mut zip_entries: Vec<ZipFileEntry> = Vec::new();
+
+        zip_entries.push(ZipFileEntry {
+            body: vec![0; 10],
+            crc: 0,
+            file_name: "BugCat.txt".to_string(),
+            dos_time: 0,
+            dos_date: 0,
+            entry_offset: 0,
+        });
+
+
+        let mut end_of_central_directory = blob_factory_adapter.get_end_of_central_directory_record(&zip_entries);
+
+        assert_eq!([0x50, 0x4B, 0x05, 0x06], &end_of_central_directory[0..4]);
+    }
+
+
+    #[test]
     fn creating_zip_blob_with_single_file() {
         let blob_factory_adapter = ZipBlobFactoryAdapter {
             crc_calculator: Box::new(FakeCrcCalculator {}),

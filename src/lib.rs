@@ -25,8 +25,6 @@ extern "C" {
 
 #[wasm_bindgen]
 pub fn generate_zip_blob(zip_contents: Object) -> Box<[u8]> {
-    set_panic_hook();
-
     let directory_mapping = create_directory_mapping(&zip_contents, String::from(""));
 
     let directory_hash_map = directory_hash_map_generator::generate_directory_mapping(directory_mapping);
@@ -39,14 +37,16 @@ pub fn generate_zip_blob(zip_contents: Object) -> Box<[u8]> {
     //TODO: Remove Chrono Dependency - Need To Grab Time From Javascript
     let date_time_retriever = Box::new(DosDateTimeCalculatorAdapter {
         date_time: SystemTime {
-            hours: 0,
-            minutes: 0,
-            seconds: 0,
-            day: 0,
-            month: 0,
-            year: 0,
+            hours: 10,
+            minutes: 20,
+            seconds: 20,
+            day: 2,
+            month: 4,
+            year: 2022,
         }
     });
+
+    //TODO: Complete blob factory tests and add basic integration tests
 
     let zip_blob_factory = ZipBlobFactoryAdapter {
         crc_calculator,
