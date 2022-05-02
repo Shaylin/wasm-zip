@@ -19,6 +19,6 @@ browser_integration_test:
   stage: integration_tests
   script:
     - apt-get update
-    - apt-get install firefox -y
+    - apt-get install firefox-esr -y
     - cargo install wasm-pack
     - wasm-pack test --headless --firefox
