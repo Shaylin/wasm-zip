@@ -1,10 +1,10 @@
 pub struct ZipFileEntry {
-    body: Box<[u8]>,
-    crc: u32,
-    file_name: String,
-    dos_time: u16,
-    dos_date: u16,
-    entry_offset: u32,
+    pub body: Vec<u8>,
+    pub crc: u32,
+    pub file_name: String,
+    pub dos_time: u16,
+    pub dos_date: u16,
+    pub entry_offset: u32,
 }
 
 impl ZipFileEntry {
@@ -66,10 +66,9 @@ impl ZipFileEntry {
     }
 
     fn get_total_file_size(&self) -> u32 {
-        let file_name_size: u32 = self.file_name.len() as u32;
         let body_size: u32 = self.body.len() as u32;
 
-        file_name_size + body_size
+        body_size
     }
 
     fn get_local_file_name_header_section(&self) -> Vec<u8> {
@@ -156,7 +155,7 @@ mod tests {
     #[test]
     fn header_size_with_short_file_name() {
         let file_entry = ZipFileEntry {
-            body: Box::from([1, 2, 3]),
+            body: vec![0; 3],
             crc: 0,
             file_name: String::from("yow"),
             dos_time: 0,
@@ -172,7 +171,7 @@ mod tests {
     #[test]
     fn header_size_with_long_file_name() {
         let file_entry = ZipFileEntry {
-            body: Box::from([1, 2, 3]),
+            body: vec![0; 3],
             crc: 0,
             file_name: String::from("Capoo The BugCat Makes His Move"),
             dos_time: 0,
@@ -188,7 +187,7 @@ mod tests {
     #[test]
     fn local_file_header_signature() {
         let file_entry = ZipFileEntry {
-            body: Box::from([1, 2, 3]),
+            body: vec![0;3],
             crc: 0,
             file_name: String::from("Capoo"),
             dos_time: 0,
@@ -204,7 +203,7 @@ mod tests {
     #[test]
     fn local_file_header_minimum_version() {
         let file_entry = ZipFileEntry {
-            body: Box::from([1, 2, 3]),
+            body: vec![0;3],
             crc: 0,
             file_name: String::from("Capoo"),
             dos_time: 0,
@@ -220,7 +219,7 @@ mod tests {
     #[test]
     fn local_file_header_general_purpose_bit_flag() {
         let file_entry = ZipFileEntry {
-            body: Box::from([1, 2, 3]),
+            body: vec![0;3],
             crc: 0,
             file_name: String::from("Capoo"),
             dos_time: 0,
@@ -236,7 +235,7 @@ mod tests {
     #[test]
     fn local_file_header_compression_method() {
         let file_entry = ZipFileEntry {
-            body: Box::from([1, 2, 3]),
+            body: vec![0;3],
             crc: 0,
             file_name: String::from("Capoo"),
             dos_time: 0,
@@ -252,7 +251,7 @@ mod tests {
     #[test]
     fn local_file_header_modified_time() {
         let file_entry = ZipFileEntry {
-            body: Box::from([1, 2, 3]),
+            body: vec![0;3],
             crc: 0,
             file_name: String::from("Capoo"),
             dos_time: 0x5611,
@@ -268,7 +267,7 @@ mod tests {
     #[test]
     fn local_file_header_modified_date() {
         let file_entry = ZipFileEntry {
-            body: Box::from([1, 2, 3]),
+            body: vec![0;3],
             crc: 0,
             file_name: String::from("Capoo"),
             dos_time: 0,
@@ -284,7 +283,7 @@ mod tests {
     #[test]
     fn local_file_header_crc() {
         let file_entry = ZipFileEntry {
-            body: Box::from([1, 2, 3]),
+            body: vec![0;3],
             crc: 0x11223344,
             file_name: String::from("Capoo"),
             dos_time: 0,
@@ -300,7 +299,7 @@ mod tests {
     #[test]
     fn local_file_header_compressed_size() {
         let file_entry = ZipFileEntry {
-            body: Box::from([1, 2, 3]),
+            body: vec![0;3],
             crc: 0,
             file_name: String::from("Capoo"),
             dos_time: 0,
@@ -310,13 +309,13 @@ mod tests {
 
         let local_file_header = file_entry.get_local_file_header();
 
-        assert_eq!([0x08, 0x00, 0x00, 0x00], &local_file_header[18..22]);
+        assert_eq!([0x03, 0x00, 0x00, 0x00], &local_file_header[18..22]);
     }
 
     #[test]
     fn local_file_header_uncompressed_size() {
         let file_entry = ZipFileEntry {
-            body: Box::from([1, 2, 3, 4]),
+            body: vec![0;4],
             crc: 0,
             file_name: String::from("Capoo The BugCat"),
             dos_time: 0,
@@ -326,13 +325,13 @@ mod tests {
 
         let local_file_header = file_entry.get_local_file_header();
 
-        assert_eq!([0x14, 0x00, 0x00, 0x00], &local_file_header[22..26]);
+        assert_eq!([0x04, 0x00, 0x00, 0x00], &local_file_header[22..26]);
     }
 
     #[test]
     fn local_file_header_file_name_length() {
         let file_entry = ZipFileEntry {
-            body: Box::from([1, 2, 3, 4]),
+            body: vec![0;4],
             crc: 0,
             file_name: String::from("FoamCat/CafeIsGood.txt"),
             dos_time: 0,
@@ -348,7 +347,7 @@ mod tests {
     #[test]
     fn local_file_header_extra_field_length() {
         let file_entry = ZipFileEntry {
-            body: Box::from([1, 2, 3]),
+            body: vec![0;3],
             crc: 0,
             file_name: String::from("FoamCat"),
             dos_time: 0,
@@ -366,7 +365,7 @@ mod tests {
         let given_file_name = String::from("This is a test file name.png");
 
         let file_entry = ZipFileEntry {
-            body: Box::from([1, 2, 3]),
+            body: vec![0;3],
             crc: 0,
             file_name: given_file_name.clone(),
             dos_time: 0,
@@ -382,7 +381,7 @@ mod tests {
     #[test]
     fn central_directory_header_size_with_small_file_name() {
         let file_entry = ZipFileEntry {
-            body: Box::from([1, 2, 3]),
+            body: vec![0;3],
             crc: 0,
             file_name: String::from("yo"),
             dos_time: 0,
@@ -398,7 +397,7 @@ mod tests {
     #[test]
     fn central_directory_header_size_with_large_file_name() {
         let file_entry = ZipFileEntry {
-            body: Box::from([1, 2, 3]),
+            body: vec![0;3],
             crc: 0,
             file_name: String::from("This Is An Exceedingly Long File Name With Many Characters.txt"),
             dos_time: 0,
@@ -414,7 +413,7 @@ mod tests {
     #[test]
     fn central_directory_header_signature() {
         let file_entry = ZipFileEntry {
-            body: Box::from([1, 2, 3]),
+            body: vec![0;3],
             crc: 0,
             file_name: String::from("This Is An Exceedingly Long File Name With Many Characters.txt"),
             dos_time: 0,
@@ -430,7 +429,7 @@ mod tests {
     #[test]
     fn central_directory_header_version_made_by() {
         let file_entry = ZipFileEntry {
-            body: Box::from([1, 2, 3]),
+            body: vec![0;3],
             crc: 0,
             file_name: String::from("Ba"),
             dos_time: 0,
@@ -446,7 +445,7 @@ mod tests {
     #[test]
     fn central_directory_header_version_needed_to_extract() {
         let file_entry = ZipFileEntry {
-            body: Box::from([1, 2, 3]),
+            body: vec![0;3],
             crc: 0,
             file_name: String::from("Ba"),
             dos_time: 0,
@@ -462,7 +461,7 @@ mod tests {
     #[test]
     fn central_directory_header_general_purpose_bit_flag() {
         let file_entry = ZipFileEntry {
-            body: Box::from([1, 2, 3]),
+            body: vec![0;3],
             crc: 0,
             file_name: String::from("Ba"),
             dos_time: 0,
@@ -478,7 +477,7 @@ mod tests {
     #[test]
     fn central_directory_header_compression_method() {
         let file_entry = ZipFileEntry {
-            body: Box::from([1, 2, 3]),
+            body: vec![0;3],
             crc: 0,
             file_name: String::from("Ba"),
             dos_time: 0,
@@ -494,7 +493,7 @@ mod tests {
     #[test]
     fn central_directory_header_modified_time() {
         let file_entry = ZipFileEntry {
-            body: Box::from([1, 2, 3]),
+            body: vec![0;3],
             crc: 0,
             file_name: String::from("Ba"),
             dos_time: 0xFF84,
@@ -510,7 +509,7 @@ mod tests {
     #[test]
     fn central_directory_header_modified_date() {
         let file_entry = ZipFileEntry {
-            body: Box::from([1, 2, 3]),
+            body: vec![0;3],
             crc: 0,
             file_name: String::from("Ba"),
             dos_time: 0,
@@ -526,7 +525,7 @@ mod tests {
     #[test]
     fn central_directory_header_crc() {
         let file_entry = ZipFileEntry {
-            body: Box::from([1, 2, 3]),
+            body: vec![0;3],
             crc: 0xBEAD1234,
             file_name: String::from("Ba"),
             dos_time: 0,
@@ -542,7 +541,7 @@ mod tests {
     #[test]
     fn central_directory_header_compressed_size() {
         let file_entry = ZipFileEntry {
-            body: Box::from([1, 2, 3]),
+            body: vec![0;3],
             crc: 0,
             file_name: String::from("Ba"),
             dos_time: 0,
@@ -552,13 +551,13 @@ mod tests {
 
         let central_directory_header = file_entry.get_central_directory_header();
 
-        assert_eq!([0x05, 0x00, 0x00, 0x00], &central_directory_header[20..24]);
+        assert_eq!([0x03, 0x00, 0x00, 0x00], &central_directory_header[20..24]);
     }
 
     #[test]
     fn central_directory_header_uncompressed_size() {
         let file_entry = ZipFileEntry {
-            body: Box::from([1, 2, 3, 4, 5]),
+            body: vec![0;5],
             crc: 0,
             file_name: String::from("Foam Cat"),
             dos_time: 0,
@@ -568,13 +567,13 @@ mod tests {
 
         let central_directory_header = file_entry.get_central_directory_header();
 
-        assert_eq!([0x0D, 0x00, 0x00, 0x00], &central_directory_header[24..28]);
+        assert_eq!([0x05, 0x00, 0x00, 0x00], &central_directory_header[24..28]);
     }
 
     #[test]
     fn central_directory_header_file_name_length() {
         let file_entry = ZipFileEntry {
-            body: Box::from([1, 2, 3, 4, 5]),
+            body: vec![0;5],
             crc: 0,
             file_name: String::from("Foam Cat"),
             dos_time: 0,
@@ -590,7 +589,7 @@ mod tests {
     #[test]
     fn central_directory_header_extra_field_length() {
         let file_entry = ZipFileEntry {
-            body: Box::from([1, 2, 3, 4, 5]),
+            body: vec![0;5],
             crc: 0,
             file_name: String::from("Foam Cat"),
             dos_time: 0,
@@ -606,7 +605,7 @@ mod tests {
     #[test]
     fn central_directory_header_file_comment_length() {
         let file_entry = ZipFileEntry {
-            body: Box::from([1, 2, 3]),
+            body: vec![0;3],
             crc: 0,
             file_name: String::from("Foam"),
             dos_time: 0,
@@ -622,7 +621,7 @@ mod tests {
     #[test]
     fn central_directory_header_disk_number_start() {
         let file_entry = ZipFileEntry {
-            body: Box::from([1, 2, 3]),
+            body: vec![0;3],
             crc: 0,
             file_name: String::from("Foam"),
             dos_time: 0,
@@ -638,7 +637,7 @@ mod tests {
     #[test]
     fn central_directory_header_internal_file_attributes() {
         let file_entry = ZipFileEntry {
-            body: Box::from([1, 2, 3]),
+            body: vec![0;3],
             crc: 0,
             file_name: String::from("Foam"),
             dos_time: 0,
@@ -654,7 +653,7 @@ mod tests {
     #[test]
     fn central_directory_header_external_file_attributes() {
         let file_entry = ZipFileEntry {
-            body: Box::from([1, 2, 3]),
+            body: vec![0;3],
             crc: 0,
             file_name: String::from("Foam"),
             dos_time: 0,
@@ -670,7 +669,7 @@ mod tests {
     #[test]
     fn central_directory_header_relative_offset() {
         let file_entry = ZipFileEntry {
-            body: Box::from([1, 2, 3]),
+            body: vec![0;3],
             crc: 0,
             file_name: String::from("Foam"),
             dos_time: 0,
@@ -688,7 +687,7 @@ mod tests {
         let given_name = String::from("Foam Cat Takes Over the World");
 
         let file_entry = ZipFileEntry {
-            body: Box::from([1, 2, 3]),
+            body: vec![0;3],
             crc: 0,
             file_name: given_name.clone(),
             dos_time: 0,

@@ -1,15 +1,24 @@
 stages:
-  - quality
+  - quality_checks
+  - integration_tests
 
 image: rust:buster
 
 lint:
-  stage: quality
+  stage: quality_checks
   script:
     - rustup component add clippy
     - cargo clippy
 
 unit_test:
-  stage: quality
+  stage: quality_checks
   script:
     - cargo test
+
+browser_integration_test:
+  stage: integration_tests
+  script:
+    - apt-get update
+    - apt-get install firefox-esr -y
+    - cargo install wasm-pack
+    - wasm-pack test --headless --firefox
