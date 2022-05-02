@@ -35,7 +35,6 @@ npm_publish:
     - wasm-pack build
     - echo "//registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}" > ./pkg/.npmrc
     - wasm-pack pack
-    - wasm-pack login
     - wasm-pack publish
 #  only:
 #    - main
