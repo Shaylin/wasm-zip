@@ -1,6 +1,6 @@
 stages:
   - quality_checks
-  - integration_tests
+#  - integration_tests
   - publish
 
 image: rust:buster
@@ -16,17 +16,18 @@ unit_test:
   script:
     - cargo test
 
-browser_integration_test:
-  stage: integration_tests
-  script:
-    - apt-get update
-    - apt-get install firefox-esr -y
-    - cargo install wasm-pack
-    - wasm-pack test --headless --firefox
+#browser_integration_test:
+#  stage: integration_tests
+#  script:
+#    - apt-get update
+#    - apt-get install firefox-esr -y
+#    - cargo install wasm-pack
+#    - wasm-pack test --headless --firefox
 
 npm_publish:
   stage: publish
   script:
+    - cargo install wasm-pack
     - apt-get update
     - apt-get install curl
     - curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
