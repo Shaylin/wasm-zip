@@ -26,7 +26,6 @@ unit_test:
 
 npm_publish:
   stage: publish
-  e
   script:
     - cargo install wasm-pack
     - apt-get update
