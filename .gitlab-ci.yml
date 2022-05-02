@@ -13,3 +13,9 @@ unit_test:
   stage: quality
   script:
     - cargo test
+
+browser_integration_test:
+  stage: quality
+  script:
+    - cargo install wasm-pack
+    - wasm-pack test --headless --firefox

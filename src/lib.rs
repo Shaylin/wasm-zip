@@ -7,11 +7,9 @@ use crc_calculator::CrcCalculator;
 
 use crate::date_time_converter::dos_date_time_calculator_adapter::DosDateTimeCalculatorAdapter;
 use crate::date_time_converter::SystemTime;
-use crate::utils::set_panic_hook;
 use crate::zip_file::zip_blob_factory::ZipBlobFactoryAdapter;
 use crate::zip_file::ZipBlobFactory;
 
-mod utils;
 mod crc_calculator;
 mod zip_file;
 mod date_time_converter;
@@ -29,8 +27,6 @@ extern "C" {
 
 #[wasm_bindgen]
 pub fn generate_zip_blob(zip_contents: Object) -> Box<[u8]> {
-    set_panic_hook();
-
     let directory_mapping = create_directory_mapping(&zip_contents, String::from(""));
 
     let directory_hash_map = directory_hash_map_generator::generate_directory_mapping(directory_mapping);
