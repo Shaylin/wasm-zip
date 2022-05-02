@@ -102,5 +102,9 @@ window.URL.revokeObjectURL(blobURL);
 ```
 
 ## Limitations
-1. Only zip stored archives are supported at this moment. No compression options are available. This was a simplification chosen since there is no bandwidth cost associated with downloading a blob from your own client memory.
-2. The permitted maximum blob size for web browsers typically does not exceed a few hundred MiB. The exact number varies per browser.
+
+1. Only zip stored archives are supported at this moment. No compression options are available. This was a simplifying
+   design decision since there is no bandwidth cost associated with downloading a blob from within your own client
+   memory.
+2. The permitted maximum blob size for web browsers typically does not exceed a few hundred MiB. The exact number varies
+   per browser.
