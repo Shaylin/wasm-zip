@@ -26,15 +26,13 @@ unit_test:
 
 npm_publish:
   stage: publish
+  e
   script:
     - cargo install wasm-pack
     - apt-get update
     - apt-get install curl
     - curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
     - apt-get install -y nodejs
-    - echo _auth=${NPM_ACCESS_TOKEN} >> .npmrc
-    - echo email=${NPM_EMAIL} >> .npmrc
-    - echo always-auth=true >> .npmrc
     - wasm-pack build
     - wasm-pack pack
     - wasm-pack publish
