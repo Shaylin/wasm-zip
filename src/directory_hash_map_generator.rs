@@ -20,7 +20,7 @@ pub fn generate_directory_mapping(directory_mapping: Map) -> HashMap<String, Vec
 }
 
 fn get_file_contents(directory_mapping: &Map, file_name: &JsValue) -> Vec<u8> {
-    let file_js_value = directory_mapping.get(&file_name);
+    let file_js_value = directory_mapping.get(file_name);
 
     Uint8Array::new(&file_js_value).to_vec()
 }

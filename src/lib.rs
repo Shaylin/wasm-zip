@@ -1,6 +1,5 @@
-use std::alloc::System;
 use crc::{Crc, CRC_32_ISO_HDLC};
-use js_sys::{Map, Object, Uint8Array};
+use js_sys::{Map, Object};
 use wasm_bindgen::prelude::*;
 
 use crc_calculator::crc_calculator_adapter::CrcCalculatorAdapter;
@@ -23,30 +22,35 @@ extern "C" {
     fn create_directory_mapping(directory_listing: &Object, folder_prefix: String) -> Map;
 }
 
+#[wasm_bindgen(module = "/js/get_system_time.js")]
+extern "C" {
+    fn get_system_time() -> Box<[u16]>;
+}
+
 #[wasm_bindgen]
 pub fn generate_zip_blob(zip_contents: Object) -> Box<[u8]> {
+    set_panic_hook();
+
     let directory_mapping = create_directory_mapping(&zip_contents, String::from(""));
 
     let directory_hash_map = directory_hash_map_generator::generate_directory_mapping(directory_mapping);
 
-    //TODO: CRC Is Correct -> Now We Face A Headings Error - End Of Data Found
     let crc_calculator = Box::new(CrcCalculatorAdapter {
         crc: Crc::<u32>::new(&CRC_32_ISO_HDLC)
     });
 
-    //TODO: Remove Chrono Dependency - Need To Grab Time From Javascript
+    let browser_time = get_system_time();
+
     let date_time_retriever = Box::new(DosDateTimeCalculatorAdapter {
         date_time: SystemTime {
-            hours: 10,
-            minutes: 20,
-            seconds: 20,
-            day: 2,
-            month: 4,
-            year: 2022,
+            hours: browser_time[0],
+            minutes: browser_time[1],
+            seconds: browser_time[2],
+            day: browser_time[3],
+            month: browser_time[4],
+            year: browser_time[5],
         }
     });
-
-    //TODO: Complete blob factory tests and add basic integration tests
 
     let zip_blob_factory = ZipBlobFactoryAdapter {
         crc_calculator,
