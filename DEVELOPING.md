@@ -1,6 +1,6 @@
 # Developing
 
-## Requirements
+## Required Tooling
 1. Rust - [https://rustup.rs/](https://rustup.rs/)
 2. Wasm-pack - [https://rustwasm.github.io/wasm-pack/](https://rustwasm.github.io/wasm-pack/)
 
