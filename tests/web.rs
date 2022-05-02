@@ -16,7 +16,7 @@ fn single_file() {
     let file_name = JsValue::from("BugCat.txt");
     let file_data = JsValue::from("Hello!");
 
-    Reflect::set(&directory_object, &file_name, &file_data);
+    Reflect::set(&directory_object, &file_name, &file_data).unwrap();
 
     generate_zip_blob(directory_object);
 }
@@ -32,9 +32,9 @@ fn multiple_files() {
     let third_file_name = JsValue::from("Thing.json");
     let third_file_data = JsValue::from("{}");
 
-    Reflect::set(&directory_object, &first_file_name, &first_file_data);
-    Reflect::set(&directory_object, &second_file_name, &second_file_data);
-    Reflect::set(&directory_object, &third_file_name, &third_file_data);
+    Reflect::set(&directory_object, &first_file_name, &first_file_data).unwrap();
+    Reflect::set(&directory_object, &second_file_name, &second_file_data).unwrap();
+    Reflect::set(&directory_object, &third_file_name, &third_file_data).unwrap();
 
     generate_zip_blob(directory_object);
 }
@@ -50,9 +50,9 @@ fn multiple_files_with_folders() {
     let third_file_name = JsValue::from("AnotherFolder/ExtraFolder/Thing.json");
     let third_file_data = JsValue::from("{}");
 
-    Reflect::set(&directory_object, &first_file_name, &first_file_data);
-    Reflect::set(&directory_object, &second_file_name, &second_file_data);
-    Reflect::set(&directory_object, &third_file_name, &third_file_data);
+    Reflect::set(&directory_object, &first_file_name, &first_file_data).unwrap();
+    Reflect::set(&directory_object, &second_file_name, &second_file_data).unwrap();
+    Reflect::set(&directory_object, &third_file_name, &third_file_data).unwrap();
 
     generate_zip_blob(directory_object);
 }

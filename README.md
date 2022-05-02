@@ -24,6 +24,7 @@ Potential use cases include:
 
 ### Installation
 
+TODO: Yet to be published
 ```
 npm install doggy-bag --save
 ```
