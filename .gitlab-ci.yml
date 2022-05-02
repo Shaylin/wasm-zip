@@ -1,6 +1,6 @@
 stages:
   - quality_checks
-#  - integration_tests
+  - integration_tests
   - publish
 
 image: rust:buster
@@ -16,13 +16,13 @@ unit_test:
   script:
     - cargo test
 
-#browser_integration_test:
-#  stage: integration_tests
-#  script:
-#    - apt-get update
-#    - apt-get install firefox-esr -y
-#    - cargo install wasm-pack
-#    - wasm-pack test --headless --firefox
+browser_integration_test:
+  stage: integration_tests
+  script:
+    - apt-get update
+    - apt-get install firefox-esr -y
+    - cargo install wasm-pack
+    - wasm-pack test --headless --firefox
 
 npm_publish:
   stage: publish
@@ -33,7 +33,9 @@ npm_publish:
     - curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
     - apt-get install -y nodejs
     - wasm-pack build
+    - echo "//registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}" > ./pkg/.npmrc
     - wasm-pack pack
+    - wasm-pack login
     - wasm-pack publish
 #  only:
 #    - main
