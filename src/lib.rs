@@ -26,7 +26,7 @@ extern "C" {
 }
 
 #[wasm_bindgen]
-pub fn generate_zip_blob(zip_contents: Object) -> Box<[u8]> {
+pub fn generate_zip_binary(zip_contents: Object) -> Box<[u8]> {
     let directory_mapping = create_directory_mapping(&zip_contents, String::from(""));
 
     let directory_hash_map = directory_hash_map_generator::generate_directory_mapping(directory_mapping);
@@ -53,5 +53,5 @@ pub fn generate_zip_blob(zip_contents: Object) -> Box<[u8]> {
         date_time_retriever,
     };
 
-    zip_blob_factory.create_zip_blob(directory_hash_map)
+    zip_blob_factory.create_zip_binary(directory_hash_map)
 }

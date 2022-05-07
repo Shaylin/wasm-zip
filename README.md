@@ -20,6 +20,10 @@ Potential use cases include:
 3. Packaging files from multiple remote sources as single convenient download for users. This can be used to simplify
    hosting requirements as even static web pages can package files.
 
+For more background information, see [BACKGROUND.md](BACKGROUND.md).
+
+To get started with development, see [DEVELOPING.md](DEVELOPING.md).
+
 ## Usage
 
 ### Installation
@@ -36,7 +40,7 @@ represented by nesting objects. Strings and Uint8Arrays are accepted as file con
 Example Input:
 
 ```javascript
-const directory_mapping = {
+const directoryMapping = {
     "MyFile.txt": "Hello World!",
     "MyFolder": {
         "FileInsideFolder.json": JSON.stringify({isInsideFolder: true, someData: 2})
@@ -44,11 +48,11 @@ const directory_mapping = {
 };
 ```
 
-This input object is then supplied to the library where it is processed and single binary zip file blob representing a
+This input object is then supplied to the library where it is processed and single binary zip file representing a
 zip file is returned to the caller.
 
 ```rust
-pub fn generate_zip_blob(zip_contents: Object) -> Box<[u8]>
+pub fn generate_zip_binary(zip_contents: Object) -> Box<[u8]>
 ```
 
 ### Multi-File JavaScript Example
@@ -75,7 +79,7 @@ fetch(imageRequest).then(async (response) => {
     }
 
     //Generate a zip blob from the retrieved image and report data
-    const zipBinary = wasm.generate_zip_blob(directoryMapping);
+    const zipBinary = wasm.generate_zip_binary(directoryMapping);
     const downloadableBlob = new Blob([zipBinary], {
         type: "application/zip;charset=utf-8"
     });

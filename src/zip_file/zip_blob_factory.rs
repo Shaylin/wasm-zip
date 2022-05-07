@@ -11,7 +11,7 @@ pub struct ZipBlobFactoryAdapter {
 }
 
 impl ZipBlobFactory for ZipBlobFactoryAdapter {
-    fn create_zip_blob(&self, directory_mapping: HashMap<String, Vec<u8>>) -> Box<[u8]> {
+    fn create_zip_binary(&self, directory_mapping: HashMap<String, Vec<u8>>) -> Box<[u8]> {
         let zip_file_entries = self.create_zip_file_entries(directory_mapping);
 
         let mut zip_blob: Vec<u8> = Vec::new();
@@ -557,7 +557,7 @@ mod tests {
             (String::from("Hello.txt"), Vec::from(file_contents.as_bytes())),
         ]);
 
-        let zip_blob = blob_factory_adapter.create_zip_blob(input_map);
+        let zip_blob = blob_factory_adapter.create_zip_binary(input_map);
 
         assert_eq!(132, zip_blob.len());
 
@@ -578,7 +578,7 @@ mod tests {
             (String::from("Folder/Hi.csv"), Vec::from([1, 2, 3])),
         ]);
 
-        let zip_blob = blob_factory_adapter.create_zip_blob(input_map);
+        let zip_blob = blob_factory_adapter.create_zip_binary(input_map);
 
         assert_eq!(237, zip_blob.len());
 
