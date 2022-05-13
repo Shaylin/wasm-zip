@@ -5,7 +5,7 @@ extern crate wasm_bindgen_test;
 use js_sys::{Object, Reflect};
 use wasm_bindgen_test::*;
 use wasm_bindgen::JsValue;
-use doggy_bag::generate_zip_blob;
+use wasm_zip::generate_zip_binary;
 
 wasm_bindgen_test_configure!(run_in_browser);
 
@@ -18,7 +18,7 @@ fn single_file() {
 
     Reflect::set(&directory_object, &file_name, &file_data).unwrap();
 
-    generate_zip_blob(directory_object);
+    generate_zip_binary(directory_object);
 }
 
 #[wasm_bindgen_test]
@@ -36,7 +36,7 @@ fn multiple_files() {
     Reflect::set(&directory_object, &second_file_name, &second_file_data).unwrap();
     Reflect::set(&directory_object, &third_file_name, &third_file_data).unwrap();
 
-    generate_zip_blob(directory_object);
+    generate_zip_binary(directory_object);
 }
 
 #[wasm_bindgen_test]
@@ -54,5 +54,5 @@ fn multiple_files_with_folders() {
     Reflect::set(&directory_object, &second_file_name, &second_file_data).unwrap();
     Reflect::set(&directory_object, &third_file_name, &third_file_data).unwrap();
 
-    generate_zip_blob(directory_object);
+    generate_zip_binary(directory_object);
 }

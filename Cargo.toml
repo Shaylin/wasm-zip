@@ -1,10 +1,10 @@
 [package]
-name = "doggy-bag"
+name = "wasm-zip"
 version = "0.1.0"
 authors = ["Shaylin Chetty <shaylin.chetty@protonmail.com>"]
 edition = "2018"
 license = "MIT"
-repository = "https://gitlab.com/Shaylin/doggy-bag"
+repository = "https://gitlab.com/Shaylin/wasm-zip"
 description = "A library that allows you to generate a zip archive in memory. No file system needed."
 
 [lib]

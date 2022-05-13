@@ -40,16 +40,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ccaeedb56da03b09f598226e25e80088cb4cd25f316e6e4df7d695f0feeb1403"
 
 [[package]]
-name = "doggy-bag"
-version = "0.1.0"
-dependencies = [
- "crc",
- "js-sys",
- "wasm-bindgen",
- "wasm-bindgen-test",
-]
-
-[[package]]
 name = "js-sys"
 version = "0.3.56"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -202,6 +192,16 @@ checksum = "d0e560d44db5e73b69a9757a15512fe7e1ef93ed2061c928871a4025798293dd"
 dependencies = [
  "proc-macro2",
  "quote",
+]
+
+[[package]]
+name = "wasm-zip"
+version = "0.1.0"
+dependencies = [
+ "crc",
+ "js-sys",
+ "wasm-bindgen",
+ "wasm-bindgen-test",
 ]
 
 [[package]]

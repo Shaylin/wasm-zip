@@ -1,8 +1,8 @@
-# Doggy Bag
+# Wasm-Zip
 
 ## Introduction
 
-Doggy Bag is a Web Assembly library that allows you to generate a zip archive directly within memory in your browser. No
+Wasm-Zip is a Web Assembly library that allows you to generate a zip archive directly within memory in your browser. No
 servers or filesystem access required.
 
 The bulk of the heavy lifting is done using the Rust programming language, with some input pre-processing handled by
@@ -20,24 +20,27 @@ Potential use cases include:
 3. Packaging files from multiple remote sources as single convenient download for users. This can be used to simplify
    hosting requirements as even static web pages can package files.
 
+For more background information, see [BACKGROUND.md](BACKGROUND.md).
+
+To get started with development, see [DEVELOPING.md](DEVELOPING.md).
+
 ## Usage
 
 ### Installation
 
-TODO: Yet to be published
 ```
-npm install doggy-bag --save
+npm install wasm-zip --save
 ```
 
 ### API
 
-Doggy Bag accepts a JSON object as an input that represents a mapping between file names and file contents. Folders are
+Wasm-Zip accepts a JSON object as an input that represents a mapping between file names and file contents. Folders are
 represented by nesting objects. Strings and Uint8Arrays are accepted as file contents data types.
 
 Example Input:
 
 ```javascript
-const directory_mapping = {
+const directoryMapping = {
     "MyFile.txt": "Hello World!",
     "MyFolder": {
         "FileInsideFolder.json": JSON.stringify({isInsideFolder: true, someData: 2})
@@ -45,24 +48,24 @@ const directory_mapping = {
 };
 ```
 
-This input object is then supplied to the library where it is processed and single binary zip file blob representing a
+This input object is then supplied to the library where it is processed and single binary zip file representing a
 zip file is returned to the caller.
 
 ```rust
-pub fn generate_zip_blob(zip_contents: Object) -> Box<[u8]>
+pub fn generate_zip_binary(zip_contents: Object) -> Box<[u8]>
 ```
 
 ### Multi-File JavaScript Example
 
 ```javascript
-import * as wasm from "doggy-bag";
+import * as wasm from "wasm-zip";
 
 const imageRequest = new Request("https://picsum.photos/640");
 
 const reportData = {
-    userName: "Doggy Bag",
+    userName: "Wasm-Zip",
     id: 2231,
-    url: "https://gitlab.com/Shaylin/doggy-bag"
+    url: "https://gitlab.com/Shaylin/wasm-zip"
 };
 
 fetch(imageRequest).then(async (response) => {
@@ -71,12 +74,12 @@ fetch(imageRequest).then(async (response) => {
     const directoryMapping = {
         "MyRandomImage.jpeg": new Uint8Array(imageArrayBuffer),
         "ReportFolder": {
-            "DoggyBagReport.json": JSON.stringify(reportData)
+            "ZippedReport.json": JSON.stringify(reportData)
         }
     }
 
     //Generate a zip blob from the retrieved image and report data
-    const zipBinary = wasm.generate_zip_blob(directoryMapping);
+    const zipBinary = wasm.generate_zip_binary(directoryMapping);
     const downloadableBlob = new Blob([zipBinary], {
         type: "application/zip;charset=utf-8"
     });
