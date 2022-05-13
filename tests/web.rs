@@ -5,7 +5,7 @@ extern crate wasm_bindgen_test;
 use js_sys::{Object, Reflect};
 use wasm_bindgen_test::*;
 use wasm_bindgen::JsValue;
-use doggy_bag::generate_zip_binary;
+use wasm_zip::generate_zip_binary;
 
 wasm_bindgen_test_configure!(run_in_browser);
 

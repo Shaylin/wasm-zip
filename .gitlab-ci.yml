@@ -24,20 +24,6 @@ browser_integration_test:
     - cargo install wasm-pack
     - wasm-pack test --headless --firefox
 
-gitlab_registry_publish:
-  stage: publish
-  script:
-    - cargo install wasm-pack
-    - apt-get update
-    - apt-get install curl
-    - curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
-    - apt-get install -y nodejs
-    - wasm-pack build
-    - npm config set @foo:registry https://gitlab.example.com/api/v4/projects/${CI_PROJECT_ID} /packages/npm/
-    - npm config set -- '//gitlab.example.com/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken' "${CI_JOB_TOKEN}"
-    - wasm-pack pack
-    - wasm-pack publish
-
 #npm_publish:
 #  stage: publish
 #  script:
