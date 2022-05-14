@@ -5,6 +5,11 @@ stages:
 
 image: rust:buster
 
+cache:
+  key: "$CI_COMMIT_REF_SLUG"
+  paths:
+    - .cargo
+
 lint:
   stage: quality_checks
   script:
@@ -34,8 +39,8 @@ npm_publish:
     - apt-get install -y nodejs
     - wasm-pack build
     - echo "//registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}" > ./pkg/.npmrc
-    - node ./ci/include_js_snippets_in_package.json
-    - wasm-pack pack
+    - node ./ci/include_js_snippets_in_package.js
+#    - wasm-pack pack
 #    - wasm-pack publish
 #  only:
 #    - main
