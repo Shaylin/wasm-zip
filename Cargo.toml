@@ -1,6 +1,6 @@
 [package]
 name = "wasm-zip"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Shaylin Chetty <shaylin.chetty@protonmail.com>"]
 edition = "2018"
 license = "MIT"
