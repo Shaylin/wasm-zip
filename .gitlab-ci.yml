@@ -8,7 +8,7 @@ image: rust:buster
 cache:
   key: "$CI_COMMIT_REF_SLUG"
   paths:
-    - .cargo
+    - "~/.cargo"
 
 lint:
   stage: quality_checks
