@@ -20,8 +20,6 @@ Potential use cases include:
 3. Packaging files from multiple remote sources as single convenient download for users. This can be used to simplify
    hosting requirements as even static web pages can package files.
 
-To view an example project, [Click Here](https://shaylin.gitlab.io/wasm-zip-example/).
-
 For more background information, see [BACKGROUND.md](https://gitlab.com/Shaylin/wasm-zip/-/blob/main/BACKGROUND.md).
 
 To get started with development, see [DEVELOPING.md](https://gitlab.com/Shaylin/wasm-zip/-/blob/main/DEVELOPING.md).
